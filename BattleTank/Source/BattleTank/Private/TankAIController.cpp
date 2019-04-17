@@ -1,7 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankAIController.h"
-#include "GameFramework/Actor.h"
+#include "Engine/World.h"
+
+void ATankAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (GetPlayerTank()) {
+		// move towards the player
+
+		// aim at the player
+		GetControlledTank()->AimAt(GetPlayerTank()->GetActorLocation());
+
+		// fire if ready
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No player tank found."));
+	}
+}
 
 ATank* ATankAIController::GetControlledTank() const
 {
