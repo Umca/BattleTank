@@ -3,6 +3,7 @@
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
 #include "GameFramework/Actor.h"
+#include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -11,7 +12,7 @@ UTankAimingComponent::UTankAimingComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = true;  //?
 
 	// ...
 }
@@ -47,6 +48,9 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		StartLocation,
 		HitLocation,
 		LaunchSpeed,
+		false,
+		0,
+		0,
 		ESuggestProjVelocityTraceOption::DoNotTrace
 	);
 	if (bHaveAimSolution)
@@ -56,6 +60,10 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		//UE_LOG(LogTemp, Warning, TEXT(" %s is aiming at %s"), *TankName, *AimDirection.ToString());
 
 		MoveBarrel(HitLocation);
+	}
+	else {
+		auto time = GetWorld()->GetTimeSeconds();
+		UE_LOG(LogTemp, Warning, TEXT("No aim solution: %f"), time);
 	}
 
 }
