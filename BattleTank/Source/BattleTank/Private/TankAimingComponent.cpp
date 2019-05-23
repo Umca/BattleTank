@@ -40,7 +40,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
 	if (!Barrel) return;
-	FVector OutLaunchVelocity(0);
+	FVector OutLaunchVelocity;
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projecttile"));
 
 	bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity(
@@ -54,13 +54,15 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		0,
 		ESuggestProjVelocityTraceOption::DoNotTrace
 	);
+	//UE_LOG(LogTemp, Error, TEXT("AimSomution %s"), bHaveAimSolution ? *FString("true") : *FString("false"));
 	if (bHaveAimSolution)
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal(); // turn to unit vector
 		auto TankName = GetOwner()->GetName();
-		//UE_LOG(LogTemp, Warning, TEXT(" %s is aiming at %s"), *TankName, *AimDirection.ToString());
+		auto testT = GetWorld()->GetFirstPlayerController()->GetPawn()->GetName();
+		//UE_LOG(LogTemp, Warning, TEXT(" %s is aiming at %s, with start location %s"), *testT, *AimDirection.ToString(), *StartLocation.ToString());
 
-		MoveBarrel(HitLocation);
+		MoveBarrel(AimDirection);
 	}
 	else {
 		auto time = GetWorld()->GetTimeSeconds();
@@ -85,9 +87,17 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection) {
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
-	//UE_LOG(LogTemp, Warning, TEXT("AimAsRotator: %s"), *AimAsRotator.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("AimAsRotator: %s"), *DeltaRotator.ToString());
 	
 	Barrel->Elevate(DeltaRotator.Pitch);
-	Turret->Rotate(DeltaRotator.Yaw);
+
+	if (FMath::Abs(DeltaRotator.Yaw) < 180)
+	{
+		Turret->Rotate(DeltaRotator.Yaw);
+	}
+	else // Avoid going the long-way round
+	{
+		Turret->Rotate(-DeltaRotator.Yaw);
+	}
 }
 
