@@ -15,6 +15,7 @@ class BATTLETANK_API UTankProjectileMovementComponent : public UProjectileMoveme
 	GENERATED_BODY()
 	
 	
+
 	
 	
 };
