@@ -8,9 +8,6 @@
 
 class UTankTrack;
 
-/**
- * 
- */
 UCLASS(meta = (BlueprintSpawnableComponent))
 class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 {
@@ -26,9 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Initialise(UTankTrack * LeftTrackToset, UTankTrack * RightTrackToSet);
 
-	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
-
 private:	
+	// called from the path finding logic by the ai controllers
+	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
 	UTankTrack *LeftTrack = nullptr;
 	UTankTrack *RightTrack = nullptr;
 };

@@ -13,10 +13,11 @@ void UTankMovementComponent::RequestDirectMove(const FVector & MoveVelocity, boo
 {
 	auto Name = GetOwner()->GetName();
 	auto AIForwardIntention = MoveVelocity.GetSafeNormal();
-	//UE_LOG(LogTemp, Warning, TEXT("Tank %s vectoring to  %s"), *Name, *MoveVelocity.ToString());
 	auto TankForward = GetOwner()->GetActorForwardVector().GetSafeNormal();
 	auto ForwardThrow = FVector::DotProduct(TankForward, AIForwardIntention);
+	auto TurnThrow = FVector::CrossProduct(TankForward, AIForwardIntention).Z;
 	IntendMoveForward(ForwardThrow);
+	IntendTurnRight(TurnThrow);
 
 }
 
